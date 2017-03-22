@@ -1,8 +1,9 @@
 import java.util.UUID
 
 import org.economicsl.auctions._
+import org.economicsl.auctions.singleunit.Fill
 import org.economicsl.auctions.singleunit.orderbooks.FourHeapOrderBook
-import org.economicsl.auctions.singleunit.pricing.{AskQuotePricingRule, BidQuotePricingRule, MidPointPricingRule, WeightedAveragePricingRule}
+import org.economicsl.auctions.singleunit.pricing._
 
 
 /** Example `Tradable` object. */
@@ -72,3 +73,8 @@ val averagePrice = averagePricing(orderBook5)
 // take a look at paired orders
 val (pairedOrders, _) = orderBook5.takeWhileMatched
 pairedOrders.toList
+
+
+def fill[T <: Tradable](pricingRule: PricingRule[T, Price])(orderBook: FourHeapOrderBook[T]): Option[(Fill[T], FourHeapOrderBook[T])] = {
+  pricingRule(orderBook).map{ price => val (askOrder, bidOrder) = orderBook.head; Some(Fill(askOrder, bidOrder, price), orderBook.tail) }
+}
