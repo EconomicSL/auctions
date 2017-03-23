@@ -22,4 +22,16 @@ package object auctions {
   /** Type used to representing currencies. */
   type Currency = Double  // todo should this be Long or Double?
 
+
+  /** Classes representing discrete and continuous quantities. */
+  sealed abstract class Quantity[@specialized (Long, Double) +T](implicit ev: T => Double) {
+
+    def value: T
+
+  }
+
+  final case class DiscreteQuantity(value: Long) extends Quantity[Long]
+
+  final case class ContinuousQuantity(value: Double) extends Quantity[Double]
+
 }
