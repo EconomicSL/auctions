@@ -27,8 +27,6 @@ import static org.junit.Assert.assertTrue;
 
 class JFirstPriceSealedBidAuction {
 
-    class BOG implements BidOrderGenerator {}
-
     public static void main(String args[]) {
 
         // suppose that seller must sell the parking space at any positive price...
@@ -50,8 +48,9 @@ class JFirstPriceSealedBidAuction {
         }
 
         Optional<Clearing<JParkingSpace, Auction<JParkingSpace>>.ClearResult<JParkingSpace>> result = new Clearing<JParkingSpace, Auction<JParkingSpace>>().clear(withBids);
-
         assertTrue(result.isPresent());
+
+        // A First-Price, Sealed-Bid Auction (FPSBA) allocate the Tradable to the bidder that submits the bid with the highest price.
         assertTrue(result.get()
                     .getFills()
                     .stream()
@@ -63,5 +62,18 @@ class JFirstPriceSealedBidAuction {
                                                 .get()
                                                 .issuer()
                     ));
+
+        // The winning price of a First-Price, Sealed-Bid Auction (FPSBA) should be the highest submitted bid price.
+        assertTrue(result.get()
+                .getFills()
+                .stream()
+                .allMatch(f ->
+                        f.price() == JavaConverters.asJavaCollectionConverter(bids)
+                                .asJavaCollection()
+                                .stream()
+                                .max(new JLimitBidOrderComparator<JParkingSpace>())
+                                .get()
+                                .limit()
+                ));
     }
 }
