@@ -104,18 +104,18 @@ public class Sandbox {
         DoubleAuction.WithClosedOrderBook<JGoogleStock> withOrderBook4 = withOrderBook3.insert(order9);
         DoubleAuction.WithClosedOrderBook<JGoogleStock> withOrderBook5 = withOrderBook4.insert(order8);
 
-        Clearing<JGoogleStock> clearing = new Clearing<JGoogleStock>();
+        Clearing<JGoogleStock, DoubleAuction<JGoogleStock>> clearing = new Clearing<JGoogleStock, DoubleAuction<JGoogleStock>>();
 
         // after inserting orders, now we can define the pricing rule...
         DoubleAuction<JGoogleStock> auction = withOrderBook5.withUniformPricing(midPointPricing);
-        Optional<Clearing<JGoogleStock>.ClearResult<JGoogleStock>> result = clearing.clear(auction);
+        Optional<Clearing<JGoogleStock, DoubleAuction<JGoogleStock>>.ClearResult<JGoogleStock>> result = clearing.clear(auction);
         result.ifPresent(res -> {
             res.getFills().forEach(fill -> System.out.println(fill));
         });
 
         // ...trivial to re-run the same auction with a different pricing rule!
         DoubleAuction<JGoogleStock> auction2 = withOrderBook5.withUniformPricing(askQuotePricing);
-        Optional<Clearing<JGoogleStock>.ClearResult<JGoogleStock>> result2 = clearing.clear(auction2);
+        Optional<Clearing<JGoogleStock, DoubleAuction<JGoogleStock>>.ClearResult<JGoogleStock>> result2 = clearing.clear(auction2);
         result2.ifPresent(res -> {
             res.getFills().forEach(fill -> System.out.println(fill));
         });

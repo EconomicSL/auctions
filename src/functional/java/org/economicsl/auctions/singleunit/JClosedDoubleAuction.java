@@ -78,7 +78,7 @@ class JClosedDoubleAuction {
 
         Clearing clearing = new Clearing<>();
 
-        Optional<Clearing<JParkingSpace>.ClearResult<JParkingSpace>> result = clearing.clear(withOrders);
+        Optional<Clearing<JParkingSpace, DoubleAuction<JParkingSpace>>.ClearResult<JParkingSpace>> result = clearing.clear(withOrders);
         assertTrue(result.isPresent());
         assertTrue(result.get().getFills().size() == numOrders);
     }
