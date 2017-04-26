@@ -34,8 +34,8 @@ object Auction {
     * @tparam T
     * @return
     */
-def apply[T <: Tradable](reservation: LimitAskOrder[T], policy: PricingPolicy[T]): Auction[T] = {
-    val orderBook = FourHeapOrderBook.empty[T](LimitAskOrder.ordering.reverse, LimitBidOrder.ordering)
+  def apply[T <: Tradable](reservation: LimitAskOrder[T], policy: PricingPolicy[T]): Auction[T] = {
+    val orderBook = FourHeapOrderBook.empty[T]
     new ClosedOrderBookImpl[T](orderBook.insert(reservation), policy)
   }
 
