@@ -15,7 +15,7 @@
 
 package org.economicsl.auctions.singleunit;
 
-import org.economicsl.auctions.JParkingSpace;
+import org.economicsl.auctions.ParkingSpace;
 import org.economicsl.auctions.Price;
 import scala.collection.JavaConverters;
 import scala.collection.immutable.Stream;
@@ -31,23 +31,23 @@ class JFirstPriceSealedBidAuction {
 
         // suppose that seller must sell the parking space at any positive price...
         UUID seller = UUID.randomUUID();
-        JParkingSpace parkingSpace = new JParkingSpace(1);
-        LimitAskOrder<JParkingSpace> reservationPrice = new LimitAskOrder<>(seller, Price.MinValue(), parkingSpace);
+        ParkingSpace parkingSpace = new ParkingSpace(1);
+        LimitAskOrder<ParkingSpace> reservationPrice = new LimitAskOrder<>(seller, Price.MinValue(), parkingSpace);
 
         // seller uses a first-priced, sealed bid auction...
-        Auction<JParkingSpace> fpsba = Auction$.MODULE$.firstPriceSealedBid(reservationPrice);
+        Auction<ParkingSpace> fpsba = Auction$.MODULE$.firstPriceSealedBid(reservationPrice);
 
         // suppose that there are lots of bidders
         Random pnrg = new Random(42);
         int numberBidOrders = 1000;
-        Stream<LimitBidOrder<JParkingSpace>> bids = new JBidOrderGenerator().<JParkingSpace>randomBidOrders(1000, parkingSpace, pnrg);
+        Stream<LimitBidOrder<ParkingSpace>> bids = new JBidOrderGenerator().<ParkingSpace>randomBidOrders(1000, parkingSpace, pnrg);
 
-        Auction<JParkingSpace> withBids = fpsba;
-        for(LimitBidOrder<JParkingSpace> bidOrder : JavaConverters.asJavaCollectionConverter(bids).asJavaCollection()) {
+        Auction<ParkingSpace> withBids = fpsba;
+        for(LimitBidOrder<ParkingSpace> bidOrder : JavaConverters.asJavaCollectionConverter(bids).asJavaCollection()) {
             withBids = withBids.insert(bidOrder);
         }
 
-        Optional<Clearing<JParkingSpace, Auction<JParkingSpace>>.ClearResult<JParkingSpace>> result = new Clearing<JParkingSpace, Auction<JParkingSpace>>().clear(withBids);
+        Optional<Clearing<ParkingSpace, Auction<ParkingSpace>>.ClearResult<ParkingSpace>> result = new Clearing<ParkingSpace, Auction<ParkingSpace>>().clear(withBids);
         assertTrue(result.isPresent());
 
         // A First-Price, Sealed-Bid Auction (FPSBA) allocate the Tradable to the bidder that submits the bid with the highest price.
@@ -58,7 +58,7 @@ class JFirstPriceSealedBidAuction {
                         f.bidOrder().issuer() == JavaConverters.asJavaCollectionConverter(bids)
                                                 .asJavaCollection()
                                                 .stream()
-                                                .max(new JLimitBidOrderComparator<JParkingSpace>())
+                                                .max(new JLimitBidOrderComparator<ParkingSpace>())
                                                 .get()
                                                 .issuer()
                     ));
@@ -71,7 +71,7 @@ class JFirstPriceSealedBidAuction {
                         f.price() == JavaConverters.asJavaCollectionConverter(bids)
                                 .asJavaCollection()
                                 .stream()
-                                .max(new JLimitBidOrderComparator<JParkingSpace>())
+                                .max(new JLimitBidOrderComparator<ParkingSpace>())
                                 .get()
                                 .limit()
                 ));

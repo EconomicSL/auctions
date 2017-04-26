@@ -15,10 +15,10 @@
 
 package org.economicsl.auctions.singleunit;
 
+import org.economicsl.auctions.ParkingSpace;
 import org.economicsl.auctions.singleunit.pricing.WeightedAveragePricingRule;
 import org.economicsl.auctions.singleunit.JLimitAskOrderComparator;
 
-import org.economicsl.auctions.JParkingSpace;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -28,28 +28,28 @@ class JClosedDoubleAuction {
 
     public static void main(String args[]) {
 
-        WeightedAveragePricingRule<JParkingSpace> pricingRule = new WeightedAveragePricingRule<JParkingSpace>(0.5);
-        DoubleAuction<JParkingSpace> withDiscriminatoryPricing = DoubleAuction$.MODULE$.withDiscriminatoryPricing(pricingRule);
-        DoubleAuction<JParkingSpace> withUniformPricing = DoubleAuction$.MODULE$.withUniformPricing(pricingRule);
+        WeightedAveragePricingRule<ParkingSpace> pricingRule = new WeightedAveragePricingRule<ParkingSpace>(0.5);
+        DoubleAuction<ParkingSpace> withDiscriminatoryPricing = DoubleAuction$.MODULE$.withDiscriminatoryPricing(pricingRule);
+        DoubleAuction<ParkingSpace> withUniformPricing = DoubleAuction$.MODULE$.withUniformPricing(pricingRule);
 
-        JParkingSpace parkingSpace = new JParkingSpace(1);
+        ParkingSpace parkingSpace = new ParkingSpace(1);
 
         Random rng = new Random(42);
         int numOrders = 100;
 
-        List<LimitAskOrder<JParkingSpace>> offers = new ArrayList<>();
+        List<LimitAskOrder<ParkingSpace>> offers = new ArrayList<>();
         IntStream.range(0, numOrders)
-                .forEach(i -> offers.add(new LimitAskOrder<JParkingSpace>(
+                .forEach(i -> offers.add(new LimitAskOrder<ParkingSpace>(
                         UUID.randomUUID(),
                         rng.nextInt(Integer.MAX_VALUE),
                         parkingSpace)));
         assertTrue(offers.size() == numOrders);
 
-        List<LimitBidOrder<JParkingSpace>> bids = new ArrayList<>();
+        List<LimitBidOrder<ParkingSpace>> bids = new ArrayList<>();
         IntStream.range(0, numOrders)
-                .forEach(i -> bids.add(new LimitBidOrder<JParkingSpace>(
+                .forEach(i -> bids.add(new LimitBidOrder<ParkingSpace>(
                         UUID.randomUUID(),
-                        offers.stream().max(new JLimitAskOrderComparator<JParkingSpace>()).get().limit() + rng.nextInt(Integer.MAX_VALUE),
+                        offers.stream().max(new JLimitAskOrderComparator<ParkingSpace>()).get().limit() + rng.nextInt(Integer.MAX_VALUE),
                         parkingSpace)));
         assertTrue(bids.size() == numOrders);
 
@@ -62,8 +62,8 @@ class JClosedDoubleAuction {
         /*DoubleAuction<JParkingSpace> withBids = withDiscriminatoryPricing;
         bids.forEach(bidOrder -> withBids = withBids.insert(bidOrder));*/
 
-        DoubleAuction<JParkingSpace> withBids = withDiscriminatoryPricing;
-        for(LimitBidOrder<JParkingSpace> bidOrder : bids) {
+        DoubleAuction<ParkingSpace> withBids = withDiscriminatoryPricing;
+        for(LimitBidOrder<ParkingSpace> bidOrder : bids) {
             withBids = withBids.insert(bidOrder);
         }
 
@@ -71,14 +71,14 @@ class JClosedDoubleAuction {
         /*DoubleAuction<JParkingSpace> withOrders = withBids;
         offers.forEachOrdered(askOrder -> withOrders = withOrders.insert(askOrder));*/
 
-        DoubleAuction<JParkingSpace> withOrders = withBids;
-        for(LimitAskOrder<JParkingSpace> askOrder : offers) {
+        DoubleAuction<ParkingSpace> withOrders = withBids;
+        for(LimitAskOrder<ParkingSpace> askOrder : offers) {
             withOrders = withOrders.insert(askOrder);
         }
 
         Clearing clearing = new Clearing<>();
 
-        Optional<Clearing<JParkingSpace, DoubleAuction<JParkingSpace>>.ClearResult<JParkingSpace>> result = clearing.clear(withOrders);
+        Optional<Clearing<ParkingSpace, DoubleAuction<ParkingSpace>>.ClearResult<ParkingSpace>> result = clearing.clear(withOrders);
         assertTrue(result.isPresent());
         assertTrue(result.get().getFills().size() == numOrders);
     }

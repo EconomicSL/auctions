@@ -15,11 +15,11 @@
 
 package org.economicsl.auctions.singleunit;
 
-import org.economicsl.auctions.JParkingSpace;
+import org.economicsl.auctions.ParkingSpace;
 import org.economicsl.auctions.Price;
 import scala.collection.JavaConverters;
-import scala.collection.immutable.Stream;
 import scala.util.Random;
+import scala.collection.immutable.Stream;
 
 import java.util.*;
 
@@ -31,36 +31,36 @@ class JSecondPriceSealedBidAuction {
 
        // suppose that seller must sell the parking space at any positive price...
        UUID seller = UUID.randomUUID();
-       JParkingSpace parkingSpace = new JParkingSpace(1);
+       ParkingSpace parkingSpace = new ParkingSpace(1);
 
        // seller is willing to sell at any positive price
-       LimitAskOrder<JParkingSpace> reservationPrice = new LimitAskOrder<>(seller, Price.MinValue(), parkingSpace);
-       Auction<JParkingSpace> spsba = Auction$.MODULE$.secondPriceSealedBid(reservationPrice);
+       LimitAskOrder<ParkingSpace> reservationPrice = new LimitAskOrder<>(seller, Price.MinValue(), parkingSpace);
+       Auction<ParkingSpace> spsba = Auction$.MODULE$.secondPriceSealedBid(reservationPrice);
 
        // suppose that there are lots of bidders
        Random pnrg = new Random(42);
        int numberBidOrders = 1000;
-       Stream<LimitBidOrder<JParkingSpace>> bids = new JBidOrderGenerator().<JParkingSpace>randomBidOrders(1000, parkingSpace, pnrg);
+       Stream<LimitBidOrder<ParkingSpace>> bids = new JBidOrderGenerator().<ParkingSpace>randomBidOrders(1000, parkingSpace, pnrg);
 
-       Auction<JParkingSpace> auction = spsba;
-       for(LimitBidOrder<JParkingSpace> bidOrder : JavaConverters.asJavaCollectionConverter(bids).asJavaCollection()) {
+       Auction<ParkingSpace> auction = spsba;
+       for(LimitBidOrder<ParkingSpace> bidOrder : JavaConverters.asJavaCollectionConverter(bids).asJavaCollection()) {
            auction = auction.insert(bidOrder);
        }
 
-       Optional<Clearing<JParkingSpace, Auction<JParkingSpace>>.ClearResult<JParkingSpace>> result = new Clearing<JParkingSpace, Auction<JParkingSpace>>().clear(auction);
+       Optional<Clearing<ParkingSpace, Auction<ParkingSpace>>.ClearResult<ParkingSpace>> result = new Clearing<ParkingSpace, Auction<ParkingSpace>>().clear(auction);
        assertTrue(result.isPresent());
 
        // winning price from the original auction...
        java.util.stream.Stream<Long> winningPrice = result.get().getFills().stream().map(f -> f.price());
 
        // remove the winning bid and then find the bid price of the winner of this new auction...
-       Auction<JParkingSpace> auction2 = auction.remove(JavaConverters.asJavaCollectionConverter(bids)
+       Auction<ParkingSpace> auction2 = auction.remove(JavaConverters.asJavaCollectionConverter(bids)
                .asJavaCollection()
                .stream()
-               .max(new JLimitBidOrderComparator<JParkingSpace>())
+               .max(new JLimitBidOrderComparator<ParkingSpace>())
                .get());
 
-       Optional<Clearing<JParkingSpace, Auction<JParkingSpace>>.ClearResult<JParkingSpace>> result2 = new Clearing<JParkingSpace, Auction<JParkingSpace>>().clear(auction2);
+       Optional<Clearing<ParkingSpace, Auction<ParkingSpace>>.ClearResult<ParkingSpace>> result2 = new Clearing<ParkingSpace, Auction<ParkingSpace>>().clear(auction2);
        assertTrue(result2.isPresent());
 
        assert result2.get().getFills().stream().map(f -> f.bidOrder().limit()) == winningPrice;
