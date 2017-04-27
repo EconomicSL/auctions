@@ -58,7 +58,7 @@ public class JFirstPriceSealedBidAuctionTest {
 
     @Test
     public void highestBidderShouldWin() {
-        assertTrue("Clearing result of FPBSA is not available", result.isPresent());
+        assertTrue("Clearing result of FPBSA does not exist", result.isPresent());
         // A First-Price, Sealed-Bid Auction (FPSBA) allocate the Tradable to the bidder that submits the bid with the highest price.
         assertTrue("FPSBA doesn't allocate the tradable to the bidder with the highest price", result.get()
                 .getFills()
@@ -75,7 +75,7 @@ public class JFirstPriceSealedBidAuctionTest {
 
     @Test
     public void highestSubmittedPriceWins() {
-        assertTrue("Clearing result of FPSBA is not available", result.isPresent());
+        assertTrue("Clearing result of FPSBA does not exist", result.isPresent());
         // The winning price of a First-Price, Sealed-Bid Auction (FPSBA) should be the highest submitted bid price.
         assertTrue("Winning price of FPSBA isn't the highest submitted bid", result.get()
                 .getFills()

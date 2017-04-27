@@ -63,6 +63,7 @@ class JSecondPriceSealedBidAuction {
        Optional<Clearing<ParkingSpace, Auction<ParkingSpace>>.ClearResult<ParkingSpace>> result2 = new Clearing<ParkingSpace, Auction<ParkingSpace>>().clear(auction2);
        assertTrue(result2.isPresent());
 
-       assert result2.get().getFills().stream().map(f -> f.bidOrder().limit()) == winningPrice;
+       java.util.stream.Stream<Long> winningLimit = result2.get().getFills().stream().map(f -> f.bidOrder().limit());
+       assertTrue(Arrays.deepEquals(winningPrice.toArray(), winningLimit.toArray()));
    }
 }
