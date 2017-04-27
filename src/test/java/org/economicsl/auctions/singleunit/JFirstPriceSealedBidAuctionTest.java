@@ -46,7 +46,7 @@ public class JFirstPriceSealedBidAuctionTest {
     Optional<Clearing<ParkingSpace, Auction<ParkingSpace>>.ClearResult<ParkingSpace>> result = null;
 
     @Before
-    public void createAuction() {
+    public void setup() {
 
         Auction<ParkingSpace> withBids = fpsba;
         for(LimitBidOrder<ParkingSpace> bidOrder : JavaConverters.asJavaCollectionConverter(bids).asJavaCollection()) {
