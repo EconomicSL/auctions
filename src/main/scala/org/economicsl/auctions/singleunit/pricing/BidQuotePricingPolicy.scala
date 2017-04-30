@@ -1,5 +1,5 @@
 /*
-Copyright 2017 EconomicSL
+Copyright (c) 2017 KAPSARC
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,23 +13,19 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package org.economicsl.auctions.singleunit
+package org.economicsl.auctions.singleunit.pricing
 
-import org.economicsl.auctions.{Price, Tradable}
 import org.economicsl.auctions.singleunit.orderbooks.FourHeapOrderBook
-import org.economicsl.auctions.singleunit.pricing.PricingRule
+import org.economicsl.auctions.{Price, Tradable}
 
 
-trait ReverseAuctionLike[T <: Tradable, A <: ReverseAuctionLike[T, A]] {
+/** (M+1)th highest price determines the fill price.
+  *
+  * @note (M+1)th highest price is equivalent to the bid quote. It is incentive compatible for buyers to truthfully
+  *       reveal their respective valuations in single-unit auctions using this pricing rule.
+  */
+class BidQuotePricingPolicy[T <: Tradable] extends PricingPolicy[T] {
 
-  def insert(order: LimitAskOrder[T]): A
-
-  def remove(order: LimitAskOrder[T]): A
-
-  def clear: (Option[Stream[Fill[T]]], A)
-
-  protected def orderBook: FourHeapOrderBook[T]
-
-  protected def pricingRule: PricingRule[T, Price]
+  def apply(orderBook: FourHeapOrderBook[T]): Option[Price] = orderBook.bidPriceQuote
 
 }
