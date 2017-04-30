@@ -16,7 +16,7 @@
 package org.economicsl.auctions.singleunit;
 
 import org.economicsl.auctions.ParkingSpace;
-import org.economicsl.auctions.singleunit.pricing.WeightedAveragePricingRule;
+import org.economicsl.auctions.singleunit.pricing.WeightedAveragePricingPolicy;
 import org.economicsl.auctions.singleunit.JLimitAskOrderComparator;
 
 import java.util.*;
@@ -28,7 +28,7 @@ class JClosedDoubleAuction {
 
     public static void main(String args[]) {
 
-        WeightedAveragePricingRule<ParkingSpace> pricingRule = new WeightedAveragePricingRule<ParkingSpace>(0.5);
+        WeightedAveragePricingPolicy<ParkingSpace> pricingRule = new WeightedAveragePricingPolicy<ParkingSpace>(0.5);
         DoubleAuction<ParkingSpace> withDiscriminatoryPricing = DoubleAuction$.MODULE$.withDiscriminatoryPricing(pricingRule);
         DoubleAuction<ParkingSpace> withUniformPricing = DoubleAuction$.MODULE$.withUniformPricing(pricingRule);
 
