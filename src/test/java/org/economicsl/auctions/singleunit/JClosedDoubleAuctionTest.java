@@ -17,7 +17,7 @@ package org.economicsl.auctions.singleunit;
 
 import org.economicsl.auctions.ParkingSpace;
 import org.economicsl.auctions.singleunit.*;
-import org.economicsl.auctions.singleunit.pricing.WeightedAveragePricingRule;
+import org.economicsl.auctions.singleunit.pricing.WeightedAveragePricingPolicy;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,7 +28,7 @@ import static org.junit.Assert.assertTrue;
 
 public class JClosedDoubleAuctionTest {
 
-    WeightedAveragePricingRule<ParkingSpace> pricingRule = new WeightedAveragePricingRule<ParkingSpace>(0.5);
+    WeightedAveragePricingPolicy<ParkingSpace> pricingRule = new WeightedAveragePricingPolicy<ParkingSpace>(0.5);
     DoubleAuction<ParkingSpace> withDiscriminatoryPricing = DoubleAuction$.MODULE$.withDiscriminatoryPricing(pricingRule);
     DoubleAuction<ParkingSpace> withUniformPricing = DoubleAuction$.MODULE$.withUniformPricing(pricingRule);
 
