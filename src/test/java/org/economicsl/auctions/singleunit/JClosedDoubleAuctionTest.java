@@ -15,7 +15,7 @@
 
 package org.economicsl.auctions.singleunit;
 
-import org.economicsl.auctions.ParkingSpace;
+import org.economicsl.auctions.TestTradable;
 import org.economicsl.auctions.singleunit.*;
 import org.economicsl.auctions.singleunit.pricing.WeightedAveragePricingPolicy;
 import org.junit.Before;
@@ -28,46 +28,46 @@ import static org.junit.Assert.assertTrue;
 
 public class JClosedDoubleAuctionTest {
 
-    WeightedAveragePricingPolicy<ParkingSpace> pricingRule = new WeightedAveragePricingPolicy<ParkingSpace>(0.5);
-    DoubleAuction<ParkingSpace> withDiscriminatoryPricing = DoubleAuction$.MODULE$.withDiscriminatoryPricing(pricingRule);
-    DoubleAuction<ParkingSpace> withUniformPricing = DoubleAuction$.MODULE$.withUniformPricing(pricingRule);
+    WeightedAveragePricingPolicy<TestTradable> pricingRule = new WeightedAveragePricingPolicy<TestTradable>(0.5);
+    DoubleAuction<TestTradable> withDiscriminatoryPricing = DoubleAuction$.MODULE$.withDiscriminatoryPricing(pricingRule);
+    DoubleAuction<TestTradable> withUniformPricing = DoubleAuction$.MODULE$.withUniformPricing(pricingRule);
 
-    ParkingSpace parkingSpace = new ParkingSpace(1);
+    TestTradable tradable = new TestTradable(1);
 
     Random rng = new Random(42);
     int numOrders = 100;
 
-    List<LimitAskOrder<ParkingSpace>> offers = null;
-    List<LimitBidOrder<ParkingSpace>> bids = null;
+    List<LimitAskOrder<TestTradable>> offers = null;
+    List<LimitBidOrder<TestTradable>> bids = null;
 
-    DoubleAuction<ParkingSpace> auction = null;
+    DoubleAuction<TestTradable> auction = null;
 
     Clearing clearing = new Clearing<>();
-    Optional<Clearing<ParkingSpace, DoubleAuction<ParkingSpace>>.ClearResult<ParkingSpace>> result = null;
+    Optional<Clearing<TestTradable, DoubleAuction<TestTradable>>.ClearResult<TestTradable>> result = null;
 
     @Before
     public void setup() {
         offers = new ArrayList<>();
         IntStream.range(0, numOrders)
-                .forEach(i -> offers.add(new LimitAskOrder<ParkingSpace>(
+                .forEach(i -> offers.add(new LimitAskOrder<TestTradable>(
                         UUID.randomUUID(),
                         rng.nextInt(Integer.MAX_VALUE),
-                        parkingSpace)));
+                        TestTradable)));
 
         bids = new ArrayList<>();
         IntStream.range(0, numOrders)
-                .forEach(i -> bids.add(new LimitBidOrder<ParkingSpace>(
+                .forEach(i -> bids.add(new LimitBidOrder<TestTradable>(
                         UUID.randomUUID(),
-                        offers.stream().max(new JLimitAskOrderComparator<ParkingSpace>()).get().limit() + rng.nextInt(Integer.MAX_VALUE),
-                        parkingSpace)));
+                        offers.stream().max(new JLimitAskOrderComparator<TestTradable>()).get().limit() + rng.nextInt(Integer.MAX_VALUE),
+                        TestTradable)));
 
-        DoubleAuction<ParkingSpace> withBids = withDiscriminatoryPricing;
-        for(LimitBidOrder<ParkingSpace> bidOrder : bids) {
+        DoubleAuction<TestTradable> withBids = withDiscriminatoryPricing;
+        for(LimitBidOrder<TestTradable> bidOrder : bids) {
             withBids = withBids.insert(bidOrder);
         }
 
         auction = withBids;
-        for(LimitAskOrder<ParkingSpace> askOrder : offers) {
+        for(LimitAskOrder<TestTradable> askOrder : offers) {
             auction = auction.insert(askOrder);
         }
 

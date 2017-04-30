@@ -15,7 +15,7 @@
 
 package org.economicsl.auctions.singleunit;
 
-import org.economicsl.auctions.ParkingSpace;
+import org.economicsl.auctions.TestTradable;
 import org.economicsl.auctions.Price;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,28 +32,28 @@ public class JFirstPriceSealedBidAuctionTest {
 
     // suppose that seller must sell the parking space at any positive price...
     UUID seller = UUID.randomUUID();
-    ParkingSpace parkingSpace = new ParkingSpace(1);
-    LimitAskOrder<ParkingSpace> reservationPrice = new LimitAskOrder<>(seller, Price.MinValue(), parkingSpace);
+    TestTradable tradable = new TestTradable(1);
+    LimitAskOrder<TestTradable> reservationPrice = new LimitAskOrder<>(seller, Price.MinValue(), tradable);
 
     // seller uses a first-priced, sealed bid auction...
-    Auction<ParkingSpace> fpsba = Auction$.MODULE$.firstPriceSealedBid(reservationPrice);
+    Auction<TestTradable> fpsba = Auction$.MODULE$.firstPriceSealedBid(reservationPrice);
 
     // suppose that there are lots of bidders
     Random pnrg = new Random(42);
     int numberBidOrders = 1000;
-    Stream<LimitBidOrder<ParkingSpace>> bids = new JBidOrderGenerator().<ParkingSpace>randomBidOrders(1000, parkingSpace, pnrg);
+    Stream<LimitBidOrder<TestTradable>> bids = new JBidOrderGenerator().<TestTradable>randomBidOrders(1000, tradable, pnrg);
 
-    Optional<Clearing<ParkingSpace, Auction<ParkingSpace>>.ClearResult<ParkingSpace>> result = null;
+    Optional<Clearing<TestTradable, Auction<TestTradable>>.ClearResult<TestTradable>> result = null;
 
     @Before
     public void setup() {
 
-        Auction<ParkingSpace> withBids = fpsba;
-        for(LimitBidOrder<ParkingSpace> bidOrder : JavaConverters.asJavaCollectionConverter(bids).asJavaCollection()) {
+        Auction<TestTradable> withBids = fpsba;
+        for(LimitBidOrder<TestTradable> bidOrder : JavaConverters.asJavaCollectionConverter(bids).asJavaCollection()) {
             withBids = withBids.insert(bidOrder);
         }
 
-        result = new Clearing<ParkingSpace, Auction<ParkingSpace>>().clear(withBids);
+        result = new Clearing<TestTradable, Auction<TestTradable>>().clear(withBids);
     }
 
     @Test
@@ -67,7 +67,7 @@ public class JFirstPriceSealedBidAuctionTest {
                         f.bidOrder().issuer() == JavaConverters.asJavaCollectionConverter(bids)
                                 .asJavaCollection()
                                 .stream()
-                                .max(new JLimitBidOrderComparator<ParkingSpace>())
+                                .max(new JLimitBidOrderComparator<TestTradable>())
                                 .get()
                                 .issuer()
                 ));
@@ -84,7 +84,7 @@ public class JFirstPriceSealedBidAuctionTest {
                         f.price() == JavaConverters.asJavaCollectionConverter(bids)
                                 .asJavaCollection()
                                 .stream()
-                                .max(new JLimitBidOrderComparator<ParkingSpace>())
+                                .max(new JLimitBidOrderComparator<TestTradable>())
                                 .get()
                                 .limit()
                 ));

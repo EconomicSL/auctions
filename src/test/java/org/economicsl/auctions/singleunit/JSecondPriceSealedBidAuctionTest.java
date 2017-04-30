@@ -15,7 +15,7 @@
 
 package org.economicsl.auctions.singleunit;
 
-import org.economicsl.auctions.ParkingSpace;
+import org.economicsl.auctions.TestTradable;
 import org.economicsl.auctions.Price;
 import org.economicsl.auctions.singleunit.*;
 import org.junit.Before;
@@ -34,27 +34,27 @@ public class JSecondPriceSealedBidAuctionTest {
 
     // suppose that seller must sell the parking space at any positive price...
     UUID seller = UUID.randomUUID();
-    ParkingSpace parkingSpace = new ParkingSpace(1);
+    TestTradable tradable = new TestTradable(1);
 
     // seller is willing to sell at any positive price
-    LimitAskOrder<ParkingSpace> reservationPrice = new LimitAskOrder<>(seller, Price.MinValue(), parkingSpace);
-    Auction<ParkingSpace> auction = Auction$.MODULE$.secondPriceSealedBid(reservationPrice);
+    LimitAskOrder<TestTradable> reservationPrice = new LimitAskOrder<>(seller, Price.MinValue(), tradable);
+    Auction<TestTradable> auction = Auction$.MODULE$.secondPriceSealedBid(reservationPrice);
 
     // suppose that there are lots of bidders
     Random pnrg = new Random(42);
     int numberBidOrders = 1000;
-    Stream<LimitBidOrder<ParkingSpace>> bids = new JBidOrderGenerator().<ParkingSpace>randomBidOrders(1000, parkingSpace, pnrg);
+    Stream<LimitBidOrder<TestTradable>> bids = new JBidOrderGenerator().<TestTradable>randomBidOrders(1000, tradable, pnrg);
 
-    Optional<Clearing<ParkingSpace, Auction<ParkingSpace>>.ClearResult<ParkingSpace>> result = null;
+    Optional<Clearing<TestTradable, Auction<TestTradable>>.ClearResult<TestTradable>> result = null;
 
     @Before
     public void setup() {
 
-        for(LimitBidOrder<ParkingSpace> bidOrder : JavaConverters.asJavaCollectionConverter(bids).asJavaCollection()) {
+        for(LimitBidOrder<TestTradable> bidOrder : JavaConverters.asJavaCollectionConverter(bids).asJavaCollection()) {
             auction = auction.insert(bidOrder);
         }
 
-        result = new Clearing<ParkingSpace, Auction<ParkingSpace>>().clear(auction);
+        result = new Clearing<TestTradable, Auction<TestTradable>>().clear(auction);
     }
 
     @Test
@@ -65,13 +65,13 @@ public class JSecondPriceSealedBidAuctionTest {
         java.util.stream.Stream<Long> winningPrice = result.get().getFills().stream().map(f -> f.price());
 
         // remove the winning bid and then find the bid price of the winner of this new auction...
-        Auction<ParkingSpace> auction2 = auction.remove(JavaConverters.asJavaCollectionConverter(bids)
+        Auction<TestTradable> auction2 = auction.remove(JavaConverters.asJavaCollectionConverter(bids)
                 .asJavaCollection()
                 .stream()
-                .max(new JLimitBidOrderComparator<ParkingSpace>())
+                .max(new JLimitBidOrderComparator<TestTradable>())
                 .get());
 
-        Optional<Clearing<ParkingSpace, Auction<ParkingSpace>>.ClearResult<ParkingSpace>> result2 = new Clearing<ParkingSpace, Auction<ParkingSpace>>().clear(auction2);
+        Optional<Clearing<TestTradable, Auction<TestTradable>>.ClearResult<TestTradable>> result2 = new Clearing<TestTradable, Auction<TestTradable>>().clear(auction2);
         assertTrue("Clearing result of SPSBA with removed winning bid does not exist", result2.isPresent());
 
         java.util.stream.Stream<Long> winningLimit = result2.get().getFills().stream().map(f -> f.bidOrder().limit());
