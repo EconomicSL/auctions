@@ -15,11 +15,11 @@
 
 package org.economicsl.auctions;
 
-public class AppleStock implements Security {
+public class JAppleStock implements Security {
 
     private long tick = 1;
 
-    public AppleStock(long _tick) {
+    public JAppleStock(long _tick) {
         tick = _tick;
     }
 

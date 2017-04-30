@@ -34,7 +34,8 @@ lazy val core = (project in file(".")).
   settings(inConfig(Functional)(Defaults.testSettings): _*).
   settings(
     libraryDependencies ++= Seq(
-      "org.scalatest" %% "scalatest" % "3.0.1" % "functional, test"
+      "org.scalatest" %% "scalatest" % "3.0.1" % "functional, test",
+      "junit" % "junit" % "4.12" % "functional, test"
     ),
     parallelExecution in Functional := true
   )

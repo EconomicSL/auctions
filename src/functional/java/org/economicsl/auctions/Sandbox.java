@@ -15,7 +15,6 @@
 
 package org.economicsl.auctions;
 
-import org.economicsl.auctions.Price;
 import org.economicsl.auctions.singleunit.*;
 import org.economicsl.auctions.singleunit.orderbooks.FourHeapOrderBook;
 import org.economicsl.auctions.singleunit.pricing.AskQuotePricingPolicy;
@@ -24,7 +23,6 @@ import org.economicsl.auctions.singleunit.pricing.MidPointPricingPolicy;
 import org.economicsl.auctions.singleunit.pricing.WeightedAveragePricingPolicy;
 import scala.Option;
 
-import java.util.Optional;
 import java.util.UUID;
 
 public class Sandbox {
@@ -54,8 +52,8 @@ public class Sandbox {
         LimitBidOrder<GoogleStock> order9 = new LimitBidOrder<>(issuer, 6, google);
 
         // Create an order for some other tradable
-        AppleStock apple = new AppleStock(2);
-        LimitBidOrder<AppleStock> order10 = new LimitBidOrder<>(issuer, 10, apple);
+        JAppleStock apple = new JAppleStock(2);
+        LimitBidOrder<JAppleStock> order10 = new LimitBidOrder<>(issuer, 10, apple);
 
         // Create a four-heap order book and add some orders...
         FourHeapOrderBook<GoogleStock> orderBook1 = FourHeapOrderBook.empty();
@@ -102,18 +100,18 @@ public class Sandbox {
         DoubleAuction.WithClosedOrderBook<GoogleStock> withOrderBook4 = withOrderBook3.insert(order9);
         DoubleAuction.WithClosedOrderBook<GoogleStock> withOrderBook5 = withOrderBook4.insert(order8);
 
-        Clearing<GoogleStock> clearing = new Clearing<GoogleStock>();
+        Clearing<GoogleStock, DoubleAuction<GoogleStock>> clearing = new Clearing<GoogleStock, DoubleAuction<GoogleStock>>();
 
         // after inserting orders, now we can define the pricing rule...
         DoubleAuction<GoogleStock> auction = withOrderBook5.withUniformPricing(midPointPricing);
-        Optional<Clearing<GoogleStock>.ClearResult<GoogleStock>> result = clearing.clear(auction);
+        Optional<Clearing<GoogleStock, DoubleAuction<GoogleStock>>.ClearResult<GoogleStock>> result = clearing.clear(auction);
         result.ifPresent(res -> {
             res.getFills().forEach(fill -> System.out.println(fill));
         });
 
         // ...trivial to re-run the same auction with a different pricing rule!
         DoubleAuction<GoogleStock> auction2 = withOrderBook5.withUniformPricing(askQuotePricing);
-        Optional<Clearing<GoogleStock>.ClearResult<GoogleStock>> result2 = clearing.clear(auction2);
+        Optional<Clearing<GoogleStock, DoubleAuction<GoogleStock>>.ClearResult<GoogleStock>> result2 = clearing.clear(auction2);
         result2.ifPresent(res -> {
             res.getFills().forEach(fill -> System.out.println(fill));
         });

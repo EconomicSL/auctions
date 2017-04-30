@@ -24,18 +24,18 @@ import scala.collection.immutable.Stream;
 import java.util.List;
 import java.util.Optional;
 
-public class Clearing<T extends Tradable> {
+public class Clearing<T extends Tradable, A extends AuctionLike<T, A>> {
 
     public class ClearResult<T extends Tradable> {
-        private DoubleAuction<T> auction;
+        private A auction;
         private List<Fill<T>> fills;
 
-        public ClearResult(List<Fill<T>> _fills, DoubleAuction<T> _auction) {
+        public ClearResult(List<Fill<T>> _fills, A _auction) {
             auction = _auction;
             fills = _fills;
         }
 
-        public DoubleAuction<T> getAuction() {
+        public A getAuction() {
             return auction;
         }
 
@@ -44,8 +44,8 @@ public class Clearing<T extends Tradable> {
         }
     }
 
-    public Optional<ClearResult<T>> clear(DoubleAuction<T> auction) {
-        Tuple2<Option<Stream<Fill<T>>>, DoubleAuction<T>> clear = auction.clear();
+    public Optional<ClearResult<T>> clear(A auction) {
+        Tuple2<Option<Stream<Fill<T>>>, A> clear = auction.clear();
         Option<Stream<Fill<T>>> streamOption = clear._1();
         if(streamOption.isDefined()) {
             List<Fill<T>> fills = JavaConverters.seqAsJavaListConverter(clear._1().get()).asJava();
