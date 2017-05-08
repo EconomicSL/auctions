@@ -2,7 +2,7 @@ import java.util.UUID
 
 import org.economicsl.auctions._
 import org.economicsl.auctions.quotes.{AskPriceQuoteRequest, BidPriceQuoteRequest, SpreadQuoteRequest}
-import org.economicsl.auctions.singleunit.DoubleAuction
+import org.economicsl.auctions.singleunit.{DoubleAuction, LimitAskOrder, LimitBidOrder}
 import org.economicsl.auctions.singleunit.orderbooks.FourHeapOrderBook
 import org.economicsl.auctions.singleunit.pricing._
 import org.economicsl.auctions.singleunit.quotes.PriceQuotePolicy
@@ -48,6 +48,8 @@ val orderBook3 = orderBook2.insert(order4)
 val orderBook4 = orderBook3.insert(order9)
 val orderBook5 = orderBook4.insert(order8)
 
+// create an order book with alternative ordering...
+val otherOrderBook = FourHeapOrderBook.empty[GoogleStock](LimitAskOrder.ordering[LimitAskOrder[GoogleStock]], LimitBidOrder.ordering[LimitBidOrder[GoogleStock]])
 
 // this should not compile...and it doesn't!
 // orderBook5 + order10
