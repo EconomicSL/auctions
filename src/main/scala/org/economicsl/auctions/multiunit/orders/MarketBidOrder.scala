@@ -13,14 +13,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package org.economicsl.auctions.multiunit
+package org.economicsl.auctions.multiunit.orders
 
 import java.util.UUID
 
-import org.economicsl.auctions.{Price, Quantity, SinglePricePoint, Tradable}
+import org.economicsl.auctions.{Price, Quantity, Tradable}
 
 
-/** An order to sell a multiple units of a tradable at any positive price.
+/** An order to buy multiple units of a tradable at any positive price.
   *
   * @param issuer
   * @param quantity
@@ -29,24 +29,12 @@ import org.economicsl.auctions.{Price, Quantity, SinglePricePoint, Tradable}
   * @author davidrpugh
   * @since 0.1.0
   */
-class MarketAskOrder[+T <: Tradable](val issuer: UUID, val quantity: Quantity, val tradable: T)
-  extends AskOrder[T] with SinglePricePoint[T] {
+case class MarketBidOrder[+T <: Tradable](issuer: UUID, quantity: Quantity, tradable: T) extends BidOrder[T] {
 
-  val limit: Price = Price.MinValue
+  val limit: Price = Price.MaxValue
 
-}
-
-
-/** Companion object for `MarketAskOrder`.
-  *
-  * @author davidrpugh
-  * @since 0.1.0
-  */
-object MarketAskOrder {
-
-  def apply[T <: Tradable](issuer: UUID, quantity: Quantity, tradable: T): MarketAskOrder[T] = {
-    new MarketAskOrder[T](issuer, quantity, tradable)
+  def withQuantity(quantity: Quantity): MarketBidOrder[T] = {
+    copy(quantity = quantity)
   }
 
 }
-

@@ -29,10 +29,8 @@ lazy val commonSettings = Seq(
   compileOrder := CompileOrder.ScalaThenJava
 )
 
-
 // Define additional testing configurations
 lazy val Functional = config("functional") extend Test
-
 
 // finally define the full project build settings
 lazy val core = (project in file(".")).
