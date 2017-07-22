@@ -21,6 +21,7 @@ import org.economicsl.auctions.quotes.AskPriceQuoteRequest
 import org.economicsl.auctions.singleunit.orders.{LimitAskOrder, LimitBidOrder}
 import org.economicsl.auctions.singleunit.pricing.AskQuotePricingPolicy
 import org.economicsl.auctions._
+import org.economicsl.auctions.participants.{OrderGenerator, Token, TokenGenerator}
 import org.economicsl.core.Price
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -47,8 +48,8 @@ class FirstPriceOpenBidAuctionSpec
   val (_, highestPricedBidOrder) = bidOrders.maxBy{ case (_, bidOrder) => bidOrder.limit }
 
   // seller uses a first-priced, open bid auction...
-  val firstPriceOpenBidAuction: OpenBidAuction[ParkingSpace] = {
-    OpenBidAuction.withUniformClearingPolicy(AskQuotePricingPolicy[ParkingSpace], parkingSpace)
+  val firstPriceOpenBidAuction: OpenBidSingleUnitAuction[ParkingSpace] = {
+    OpenBidSingleUnitAuction.withUniformClearingPolicy(AskQuotePricingPolicy[ParkingSpace], parkingSpace)
   }
 
   // Seller that must sell at any positive price
@@ -58,7 +59,7 @@ class FirstPriceOpenBidAuctionSpec
   val (withReservationAskOrder, _) = firstPriceOpenBidAuction.insert(reservation)
 
   // withBidOrders will include all accepted bids (this is trivially parallel..)
-  val (withBidOrders, _) = insert[ParkingSpace, OpenBidAuction[ParkingSpace]](withReservationAskOrder)(bidOrders)
+  val (withBidOrders, _) = insert[ParkingSpace, OpenBidSingleUnitAuction[ParkingSpace]](withReservationAskOrder)(bidOrders)
   val (clearedAuction, clearResults) = withBidOrders.clear
 
   "A First-Price, Open-Bid Auction (FPOBA)" should "be able to process ask price quote requests" in {

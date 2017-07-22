@@ -1,5 +1,5 @@
 /*
-Copyright 2016 David R. Pugh
+Copyright (c) 2017 KAPSARC
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,13 +13,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package org.economicsl.auctions.actors
+package org.economicsl.auctions.participants
 
-import org.economicsl.auctions.participants.AuctionParticipant
+import org.economicsl.auctions.Issuer
 
+trait OrderIssuer[A <: OrderIssuer[A]]
+  extends TokenGenerator {
+  this: A =>
 
-trait OrderIssuingActor[A <: AuctionParticipant[A]]
-    extends StackableActor {
-  this: AuctionParticipantActor[A] =>
+  def issuer: Issuer
 
 }

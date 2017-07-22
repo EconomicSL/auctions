@@ -15,14 +15,13 @@ limitations under the License.
 */
 package org.economicsl.auctions
 
-import org.economicsl.core.util.UUIDGenerator
+import org.economicsl.auctions.quotes.{Quote, QuoteRequest}
+import org.economicsl.core.Tradable
 
 
-trait TokenGenerator
-  extends UUIDGenerator {
+/** Mixin trait that provides an `Auction` with the ability to process `QuoteRequest`. */
+trait QuotingPolicy[T <: Tradable] {
 
-  protected def randomToken(): Token = {
-    random()
-  }
+  def receive(request: QuoteRequest[T]): Quote
 
 }

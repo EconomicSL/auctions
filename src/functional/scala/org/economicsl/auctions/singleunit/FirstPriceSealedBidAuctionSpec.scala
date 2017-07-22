@@ -17,10 +17,11 @@ package org.economicsl.auctions.singleunit
 
 import java.util.UUID
 
-import org.economicsl.auctions.OrderTracker.{Accepted, Rejected}
+import org.economicsl.auctions.participants.OrderTracker.{Accepted, Rejected}
 import org.economicsl.auctions.singleunit.orders.{LimitAskOrder, LimitBidOrder}
 import org.economicsl.auctions.singleunit.pricing.AskQuotePricingPolicy
 import org.economicsl.auctions._
+import org.economicsl.auctions.participants.{OrderGenerator, Token, TokenGenerator}
 import org.economicsl.core.Price
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -40,8 +41,8 @@ class FirstPriceSealedBidAuctionSpec
   // seller uses a first-priced, sealed bid auction...
   val uuid: UUID = UUID.randomUUID()
   val parkingSpace = ParkingSpace(uuid)
-  val firstPriceSealedBidAuction: SealedBidAuction[ParkingSpace] = {
-    SealedBidAuction.withUniformClearingPolicy(AskQuotePricingPolicy[ParkingSpace], parkingSpace)
+  val firstPriceSealedBidAuction: SealedBidSingleUnitAuction[ParkingSpace] = {
+    SealedBidSingleUnitAuction.withUniformClearingPolicy(AskQuotePricingPolicy[ParkingSpace], parkingSpace)
   }
 
   // suppose that seller must sell the parking space at any positive price...

@@ -13,8 +13,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package org.economicsl.auctions
+package org.economicsl.auctions.participants
 
+import org.economicsl.auctions.{Contract, Reference, SinglePricePoint}
 import org.economicsl.core.Tradable
 import org.economicsl.core.util.Timestamp
 
@@ -25,9 +26,16 @@ trait OrderTracker[A <: OrderTracker[A]] {
 
   import OrderTracker._
 
-  final def trackOrders(accepted: Accepted): A = {
+  val outstandingOrders: Map[Token, (Reference, Contract)]
+
+  def trackOrders(accepted: Accepted): A = {
       val updated = outstandingOrders + accepted.kv
       withOutstandingOrders(updated)
+  }
+
+  def trackOrders(canceled: Canceled): A = {
+    val updated = outstandingOrders - canceled.token
+    withOutstandingOrders(updated)
   }
 
   /**
@@ -40,15 +48,8 @@ trait OrderTracker[A <: OrderTracker[A]] {
     this  // todo is this the most appropriate default behavior?
   }
 
-  final def trackOrders(canceled: Canceled): A = {
-    val updated = outstandingOrders - canceled.token
-    withOutstandingOrders(updated)
-  }
-
   /** Factory method used by sub-classes to create an `A`. */
   protected def withOutstandingOrders(updated: Map[Token, (Reference, Contract)]): A
-
-  protected val outstandingOrders: Map[Token, (Reference, Contract)]
 
 }
 

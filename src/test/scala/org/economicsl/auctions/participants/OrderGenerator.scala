@@ -13,11 +13,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package org.economicsl.auctions.singleunit
+package org.economicsl.auctions.participants
 
 import java.util.UUID
 
-import org.economicsl.auctions.{Token, TokenGenerator}
 import org.economicsl.auctions.singleunit.orders._
 import org.economicsl.core.{Price, Tradable}
 
@@ -73,7 +72,7 @@ object OrderGenerator extends TokenGenerator {
   }
 
 
-  def randomOrder[T <: Tradable](askOrderProbability: Double)(tradable: T, prng: Random): (Token, Order[T]) = {
+  def randomOrder[T <: Tradable](askOrderProbability: Double)(tradable: T, prng: Random): (Token, SingleUnitOrder[T]) = {
     if (prng.nextDouble() <= askOrderProbability) {
       randomAskOrder(tradable, prng)
     } else {
@@ -82,9 +81,9 @@ object OrderGenerator extends TokenGenerator {
   }
 
 
-  def randomOrders[T <: Tradable](askOrderProbability: Double)(n: Int, tradable: T, prng: Random): Stream[(Token, Order[T])] = {
+  def randomOrders[T <: Tradable](askOrderProbability: Double)(n: Int, tradable: T, prng: Random): Stream[(Token, SingleUnitOrder[T])] = {
     @annotation.tailrec
-    def loop(accumulated: Stream[(Token, Order[T])], remaining: Int): Stream[(Token, Order[T])] = {
+    def loop(accumulated: Stream[(Token, SingleUnitOrder[T])], remaining: Int): Stream[(Token, SingleUnitOrder[T])] = {
       if (remaining == 0) {
         accumulated
       } else {
@@ -92,7 +91,7 @@ object OrderGenerator extends TokenGenerator {
         loop(order #:: accumulated, remaining - 1)
       }
     }
-    loop(Stream.empty[(Token, Order[T])], n)
+    loop(Stream.empty[(Token, SingleUnitOrder[T])], n)
   }
 
 
