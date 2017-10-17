@@ -8,8 +8,8 @@ lazy val commonSettings = Seq(
   organizationHomepage := Some(url("https://economicsl.github.io/")),
   libraryDependencies ++= Seq(
     "org.scalactic" %% "scalactic" % "3.0.1",
-    "com.typesafe.akka" %% "akka-actor" % "2.5.2",
-    "com.typesafe.play" %% "play-json" % "2.6.0-RC2",
+    "com.typesafe.akka" %% "akka-actor" % "2.5.6",
+    "com.typesafe.play" %% "play-json" % "2.6.3",
     "org.economicsl" %% "esl-core" % "0.1.0-SNAPSHOT"
   ),
   resolvers ++= Seq(
@@ -22,8 +22,6 @@ lazy val commonSettings = Seq(
   scalacOptions ++= Seq(
     "-deprecation",  // issue warning if we use any deprecated API features
     "-feature",  // tells the compiler to provide information about misused language features
-    "-language:implicitConversions",  // eliminates the need to import implicit conversions for each usage
-    "-language:reflectiveCalls",  // needed in order to enable structural (or duck) typing
     "-Xlint",
     "-Ywarn-unused-import",
     "-Ywarn-dead-code"
@@ -44,7 +42,7 @@ lazy val core = (project in file(".")).
   settings(
     libraryDependencies ++= Seq(
       "org.scalatest" %% "scalatest" % "3.0.1" % "functional, test",
-      "com.typesafe.akka" %% "akka-testkit" % "2.5.2" % "functional, test"
+      "com.typesafe.akka" %% "akka-testkit" % "2.5.6" % "functional, test"
     ),
     parallelExecution in Functional := true
   )
